@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts",
     "test": "bunx playwright test",
     "test:server": "bun run tooling/test-server.ts",
     "build:frontend": "bun run tooling/build-frontend.ts"
