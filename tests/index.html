@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>song-charts</title>
+		<script
+			src="https://open.spotify.com/embed/iframe-api/v1"
+			async
+		></script>
+	</head>
+	<body class="body">
+		<div class="section bg-yellow">
+			<div class="container-wrapper inner-padding-medium header">
+				<div class="w-layout-grid main-grid center">
+					<div class="center-wrapper">
+						<div class="header49_content-right">
+							<div class="w-form">
+								<form
+									id="date-form"
+									name="date-form"
+									data-name="Date Form"
+									method="get"
+								>
+									<div class="input-field-wrap">
+										<div
+											class="margin-bottom margin-xxsmall"
+										>
+											<div
+												class="margin-bottom-small supersmall"
+											>
+												<div class="heading-xsmall-2">
+													Choose a date
+												</div>
+											</div>
+										</div>
+										<div class="date-wrapper">
+											<div class="field-wrap">
+												<input
+													class="text-field number month w-input"
+													max="31"
+													maxlength="256"
+													name="Month"
+													data-name="Month"
+													min="1"
+													placeholder="Month"
+													type="number"
+													id="Month"
+													required=""
+												/>
+											</div>
+											<div class="field-wrap">
+												<input
+													class="text-field number day w-input"
+													max="31"
+													maxlength="256"
+													name="Day"
+													data-name="Day"
+													min="1"
+													placeholder="Day"
+													type="number"
+													id="Day"
+													required=""
+												/>
+											</div>
+											<div class="field-wrap">
+												<input
+													class="text-field number year w-input"
+													max="2024"
+													maxlength="256"
+													name="Year"
+													data-name="Year"
+													min="1913"
+													placeholder="Year"
+													type="number"
+													id="Year"
+													required=""
+												/>
+											</div>
+										</div>
+										<div class="w-embed">
+											<input
+												type="hidden"
+												name="limit"
+												value="3"
+											/>
+										</div>
+										<p class="small-text margin">
+											This information is not stored, and
+											is not used in any way outside of
+											providing the functionality offered
+											on this page.
+										</p>
+									</div>
+									<input
+										type="submit"
+										data-wait="Please wait..."
+										id="submit-button"
+										class="main-button w-button"
+										value="Submit"
+									/>
+								</form>
+								<div class="w-form-done">
+									<div>
+										Thank you! Your submission has been
+										received!
+									</div>
+								</div>
+								<div class="w-form-fail">
+									<div>
+										Oops! Something went wrong while
+										submitting the form.
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="divider version-01"></div>
+		</div>
+		<div class="section bg-wheat">
+			<div
+				id="results-container"
+				class="container-wrapper inner-page smaller-padding"
+			>
+				<div class="margin-bottom margin-medium">
+					<div class="button-group">
+						<h2 id="results-heading" class="heading-regular">
+							Today&#x27;s top songs
+						</h2>
+						<a href="#" class="main-button bg-yellow-green w-button"
+							>Share LINK</a
+						>
+					</div>
+				</div>
+				<div id="results-wrapper">
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#1</div>
+							<div>
+								<h3 id="result-title-1" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-1" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-1"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-2"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-1"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#2</div>
+							<div>
+								<h3 id="result-title-2" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-2" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-2"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-1"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-2"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#3</div>
+							<div>
+								<h3 id="result-title-3" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-3" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-3"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-3"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-3"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#4</div>
+							<div>
+								<h3 id="result-title-4" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-4" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-4"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-4"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-4"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#5</div>
+							<div>
+								<h3 id="result-title-5" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-5" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-5"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-5"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-5"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#6</div>
+							<div>
+								<h3 id="result-title-6" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-6" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-6"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-6"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-6"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#7</div>
+							<div>
+								<h3 id="result-title-7" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-7" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-7"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-7"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-7"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#8</div>
+							<div>
+								<h3 id="result-title-8" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-8" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-8"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-8"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-8"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#9</div>
+							<div>
+								<h3 id="result-title-9" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-9" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-9"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-9"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-9"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#10</div>
+							<div>
+								<h3 id="result-title-10" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-10" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-10"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-10"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-10"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#11</div>
+							<div>
+								<h3 id="result-title-11" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-11" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-11"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-11"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-11"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="song-result-header-wrapper">
+							<div class="heading-regular">#12</div>
+							<div>
+								<h3 id="result-title-12" class="song_title">
+									Lovin On Me
+								</h3>
+								<p id="result-artist-12" class="song_artist">
+									Jack Harlow
+								</p>
+								<div
+									id="result-chart-time-12"
+									class="song_chart_time"
+								>
+									13 weeks on chart
+								</div>
+							</div>
+						</div>
+						<div
+							id="spotify-iframe-6"
+							class="spotify-embed w-embed"
+						></div>
+						<div
+							id="result-preview-not-available-6"
+							class="spotify-preview-not-available"
+						>
+							<div class="text-block-2">
+								Spotify preview is not available in this market
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="loading-results" class="section bg-wheat">
+			<div class="container-wrapper inner-page smaller-padding">
+				<div class="margin-bottom margin-medium">
+					<div class="loading-container">
+						<h1>Loading results...</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script
+			src="https://code.jquery.com/jquery-3.7.1.min.js"
+			integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			crossorigin="anonymous"
+		></script>
+		<script async>
+			/// test-server insert {{frontend-script}}
+		</script>
+	</body>
+</html>
