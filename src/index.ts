@@ -99,7 +99,7 @@ app.get('/top-tracks', async c => {
 	)
 
 	console.log(
-		`[${nonce}] Fetching top tracks for ${formattedDate} with limit ${limit}`
+		`[${nonce}] Fetching top tracks for ${nextSaturdayFormatted} with limit ${limit}`
 	)
 
 	const queryTimeNow = performance.now()
@@ -111,7 +111,7 @@ app.get('/top-tracks', async c => {
 	const queryTime = performance.now() - queryTimeNow
 
 	if (songs.length === 0) {
-		console.log(`[${nonce}] No songs found for ${formattedDate}`)
+		console.log(`[${nonce}] No songs found for ${nextSaturdayFormatted}`)
 		return c.json({ error: 'No songs found' }, 404, corsHeaders)
 	}
 
