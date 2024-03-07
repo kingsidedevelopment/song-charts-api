@@ -33,7 +33,7 @@ type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
 export function getNextDayOfWeek(date: Date, dayOfWeek: DayOfWeek) {
 	const resultDate = new Date(date.getTime())
-	resultDate.setDate(date.getDate() + ((6 + dayOfWeek - date.getDay()) % 7))
+	resultDate.setDate(date.getDate() + ((7 + dayOfWeek - date.getDay()) % 7))
 	return resultDate
 }
 
