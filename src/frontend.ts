@@ -102,7 +102,9 @@ jQuery(function () {
 			day < 10 ? '0' + day : day
 		}`
 
-		fetchAndUpdate(date)
+		window.location.search = `Day=${day}&Month=${month}&Year=${year}`
+
+		// fetchAndUpdate(date)
 		loadingView()
 
 		console.log(`Fetching songs for date ${date}`)
@@ -141,7 +143,7 @@ jQuery(function () {
 		history.pushState(
 			{ year, month, day },
 			'yyyy-mm-dd',
-			`?Day=${date}&Month=${month}&Year=${year}`
+			`?Day=${day}&Month=${month}&Year=${year}`
 		)
 
 		const data = await fetch(url, {
