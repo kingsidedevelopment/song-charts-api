@@ -29,25 +29,28 @@ jQuery(function() {
   window.onSpotifyIframeApiReady = (IFrameAPI) => {
     spotifyIframeAPI = IFrameAPI;
     console.log("Spotify iframe API ready");
+    onReady();
   };
   defaultView();
-  setTimeout(() => {
-    const params = new URLSearchParams(document.location.search);
-    const day = params.get("Day");
-    const month = params.get("Month");
-    const year = params.get("Year");
-    const queryDate = `${year}-${month}-${day}`;
-    if (!day || !month || !year) {
-      defaultView();
-      return;
-    }
-    loadingView();
-    yearInput.val(year);
-    monthInput.val(month);
-    dayInput.val(day);
-    fetchAndUpdate(queryDate);
-    resultsAnchor.get(0)?.scrollIntoView({ behavior: "smooth" });
-  }, 0);
+  function onReady() {
+    setTimeout(() => {
+      const params = new URLSearchParams(document.location.search);
+      const day = params.get("Day");
+      const month = params.get("Month");
+      const year = params.get("Year");
+      const queryDate = `${year}-${month}-${day}`;
+      if (!day || !month || !year) {
+        defaultView();
+        return;
+      }
+      loadingView();
+      yearInput.val(year);
+      monthInput.val(month);
+      dayInput.val(day);
+      fetchAndUpdate(queryDate);
+      resultsAnchor.get(0)?.scrollIntoView({ behavior: "smooth" });
+    }, 0);
+  }
   function createEmbedController(element, options, callback) {
     if (!spotifyIframeAPI) {
       console.error("Spotify iframe API not ready");
@@ -66,12 +69,8 @@ jQuery(function() {
   function onShare(event) {
     event.preventDefault();
     const params = new URLSearchParams(document.location.search);
-    const day = params.get("Day");
-    const month = params.get("Month");
-    const year = params.get("Year");
-    const url = `${window.location.origin}/?Day=${day}&Month=${month}&Year=${year}`;
-    navigator.clipboard.writeText(url);
-    console.log(`Copied ${url} to clipboard`);
+    navigator.clipboard.writeText(window.location.toString());
+    console.log(`Copied window.location to clipboard`);
   }
   async function onSubmit(event) {
     event.preventDefault();
@@ -149,7 +148,9 @@ jQuery(function() {
   }
   async function updateEmbed(rank, trackId) {
     const element = $(`#spotify-iframe-${rank}`).get(0);
-    if (!element) {
+    const child = document.createElement("div");
+    element?.appendChild(child);
+    if (!element || !child) {
       console.error(`Embed not found for rank ${rank}`);
       return;
     }
@@ -159,8 +160,12 @@ jQuery(function() {
       uri: `spotify:track:${trackId}`
     };
     const callback = (controller) => {
+      controller.addListener("ready", () => {
+        element.style.opacity = "1";
+      });
     };
-    createEmbedController(element, options, callback);
+    createEmbedController(child, options, callback);
+    element.style.opacity = "0";
   }
   function getFormattedDate(date) {
     const yyyy = date.getFullYear();

@@ -5,7 +5,8 @@ type EmbedController = {
 	play: () => void
 	togglePlay: () => void
 	seek: (position: number) => void
-	destory: () => void
+	destroy: () => void
+	addListener: (event: EmbedControllerEvent, callback: () => void) => void
 }
 type EmbedControllerEvent = 'ready' | 'playback_update'
 type CreateControllerOptions = {
@@ -66,8 +67,8 @@ jQuery(function () {
 	window.onSpotifyIframeApiReady = (IFrameAPI: any) => {
 		spotifyIframeAPI = IFrameAPI
 		console.log('Spotify iframe API ready')
-		// const callback = (EmbedController: EmbedController) => {}
-		// IFrameAPI.createController(element, options, callback)
+
+		onReady()
 	}
 
 	// hides placeholder results and shows loading
@@ -75,29 +76,31 @@ jQuery(function () {
 	// anyway, but this is just for completeness
 	defaultView()
 
-	// avoid race updating view
-	setTimeout(() => {
-		const params = new URLSearchParams(document.location.search)
-		const day = params.get('Day')
-		const month = params.get('Month')
-		const year = params.get('Year')
-		const queryDate = `${year}-${month}-${day}`
+	function onReady() {
+		// avoid race updating view
+		setTimeout(() => {
+			const params = new URLSearchParams(document.location.search)
+			const day = params.get('Day')
+			const month = params.get('Month')
+			const year = params.get('Year')
+			const queryDate = `${year}-${month}-${day}`
 
-		if (!day || !month || !year) {
-			defaultView()
-			return
-		}
+			if (!day || !month || !year) {
+				defaultView()
+				return
+			}
 
-		loadingView()
+			loadingView()
 
-		yearInput.val(year)
-		monthInput.val(month)
-		dayInput.val(day)
+			yearInput.val(year)
+			monthInput.val(month)
+			dayInput.val(day)
 
-		fetchAndUpdate(queryDate)
+			fetchAndUpdate(queryDate)
 
-		resultsAnchor.get(0)?.scrollIntoView({ behavior: 'smooth' })
-	}, 0)
+			resultsAnchor.get(0)?.scrollIntoView({ behavior: 'smooth' })
+		}, 0)
+	}
 
 	function createEmbedController(
 		element: HTMLElement,
@@ -124,12 +127,8 @@ jQuery(function () {
 	function onShare(event: MouseEvent) {
 		event.preventDefault()
 		const params = new URLSearchParams(document.location.search)
-		const day = params.get('Day')
-		const month = params.get('Month')
-		const year = params.get('Year')
-		const url = `${window.location.origin}/?Day=${day}&Month=${month}&Year=${year}`
-		navigator.clipboard.writeText(url)
-		console.log(`Copied ${url} to clipboard`)
+		navigator.clipboard.writeText(window.location.toString())
+		console.log(`Copied window.location to clipboard`)
 	}
 
 	async function onSubmit(event: MouseEvent) {
@@ -233,9 +232,14 @@ jQuery(function () {
 	}
 
 	async function updateEmbed(rank: number, trackId: string) {
+		// we want to nest a div because spotify's iFrameAPI
+		// replaces the element, and we'd lose the ability to
+		// access this embed instance via id
 		const element = $(`#spotify-iframe-${rank}`).get(0)
+		const child = document.createElement('div')
+		element?.appendChild(child)
 
-		if (!element) {
+		if (!element || !child) {
 			console.error(`Embed not found for rank ${rank}`)
 			return
 		}
@@ -246,8 +250,13 @@ jQuery(function () {
 			uri: `spotify:track:${trackId}`
 		}
 
-		const callback = (controller: EmbedController) => {}
-		createEmbedController(element, options, callback)
+		const callback = (controller: EmbedController) => {
+			controller.addListener('ready', () => {
+				element.style.opacity = '1'
+			})
+		}
+		createEmbedController(child, options, callback)
+		element.style.opacity = '0'
 	}
 
 	function getFormattedDate(date: Date) {
