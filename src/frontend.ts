@@ -65,7 +65,10 @@ jQuery(function () {
 	// avoid race updating view
 	setTimeout(() => {
 		const params = new URLSearchParams(document.location.search)
-		const queryDate = params.get('date')
+		const day = params.get('Day')
+		const month = params.get('Month')
+		const year = params.get('Year')
+		const queryDate = `${year}-${month}-${day}`
 		const nowDate = new Date()
 
 		nowDate.setDate(nowDate.getDate() - 2)
@@ -130,11 +133,16 @@ jQuery(function () {
 
 	async function fetchAndUpdate(date: string) {
 		const url = new URL(apiAddress)
+		const [year, month, day] = date.split('-')
 		url.searchParams.set('date', date)
 		url.searchParams.set('limit', String(limit))
 
 		// make page shareable
-		history.pushState({ date }, 'date', `?date=${date}`)
+		history.pushState(
+			{ year, month, day },
+			'yyyy-mm-dd',
+			`?Day=${date}&Month=${month}&Year=${year}`
+		)
 
 		const data = await fetch(url, {
 			method: 'get',
