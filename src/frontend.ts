@@ -24,16 +24,24 @@ type IFrameApi = {
 
 jQuery(function () {
 	const submitButton = $('#submit-button')
+	const resetButton = $('#reset-button')
+	const shareButton = $('#share-button')
+
 	const monthInput = $('#Month')
 	const dayInput = $('#Day')
 	const yearInput = $('#Year')
+
 	const resultsWrapper = $('#results-wrapper')
 	const resultsHeading = $('#results-heading')
 	const resultsContainer = $('#results-container')
+
 	const loadingResultsSection = $('#loading-results')
 	const noResultsSection = $('#no-results')
 	const errorResultsSection = $('#error-results')
+	const resultsSection = $('#results')
+
 	const errorMessage = $('#error-message')
+	const resultsAnchor = $('#results-anchor')
 
 	const limit = 12
 	const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -51,6 +59,8 @@ jQuery(function () {
 	let spotifyIframeAPI: IFrameApi | null = null
 
 	submitButton.get(0)?.addEventListener('click', onSubmit)
+	resetButton.get(0)?.addEventListener('click', onReset)
+	shareButton.get(0)?.addEventListener('click', onShare)
 
 	// @ts-ignore
 	window.onSpotifyIframeApiReady = (IFrameAPI: any) => {
@@ -85,6 +95,8 @@ jQuery(function () {
 		dayInput.val(day)
 
 		fetchAndUpdate(queryDate)
+
+		resultsAnchor.get(0)?.scrollIntoView({ behavior: 'smooth' })
 	}, 0)
 
 	function createEmbedController(
@@ -98,6 +110,26 @@ jQuery(function () {
 		}
 
 		spotifyIframeAPI.createController(element, options, callback)
+	}
+
+	function onReset(event: MouseEvent) {
+		event.preventDefault()
+		window.location.search = ''
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		})
+	}
+
+	function onShare(event: MouseEvent) {
+		event.preventDefault()
+		const params = new URLSearchParams(document.location.search)
+		const day = params.get('Day')
+		const month = params.get('Month')
+		const year = params.get('Year')
+		const url = `${window.location.origin}/?Day=${day}&Month=${month}&Year=${year}`
+		navigator.clipboard.writeText(url)
+		console.log(`Copied ${url} to clipboard`)
 	}
 
 	async function onSubmit(event: MouseEvent) {
@@ -119,18 +151,14 @@ jQuery(function () {
 	}
 
 	async function loadingView() {
-		resultsHeading.hide()
-		resultsWrapper.hide()
-		resultsContainer.hide()
+		resultsSection.hide()
 		noResultsSection.hide()
 		errorResultsSection.hide()
 		loadingResultsSection.show()
 	}
 
 	async function defaultView() {
-		resultsHeading.hide()
-		resultsWrapper.hide()
-		resultsContainer.hide()
+		resultsSection.hide()
 		errorResultsSection.hide()
 		loadingResultsSection.hide()
 		noResultsSection.show()
@@ -140,15 +168,14 @@ jQuery(function () {
 		resultsHeading.show()
 		resultsWrapper.show()
 		resultsContainer.show()
+		resultsSection.show()
 		loadingResultsSection.hide()
 		noResultsSection.hide()
 		errorResultsSection.hide()
 	}
 
 	async function errorView(message: string) {
-		resultsHeading.hide()
-		resultsWrapper.hide()
-		resultsContainer.hide()
+		resultsSection.hide()
 		loadingResultsSection.hide()
 		noResultsSection.hide()
 		errorResultsSection.show()
