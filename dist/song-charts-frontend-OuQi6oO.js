@@ -10,11 +10,13 @@ jQuery(function() {
   const resultsHeading = $("#results-heading");
   const resultsContainer = $("#results-container");
   const loadingResultsSection = $("#loading-results");
-  const noResultsSection = $("#no-results");
+  const noResultsSection = $("#empty-results");
   const errorResultsSection = $("#error-results");
   const resultsSection = $("#results");
   const errorMessage = $("#error-message");
   const resultsAnchor = $("#results-anchor");
+  const notificationContainer = $("#notification-container");
+  const notificationBlock = $("#notification-block");
   const limit = 12;
   const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const resultsTitles = ranking.map((rank) => $(`#result-title-${rank}`));
@@ -71,6 +73,7 @@ jQuery(function() {
     const params = new URLSearchParams(document.location.search);
     navigator.clipboard.writeText(window.location.toString());
     console.log(`Copied window.location to clipboard`);
+    notificationView();
   }
   async function onSubmit(event) {
     event.preventDefault();
@@ -110,6 +113,12 @@ jQuery(function() {
     errorResultsSection.show();
     errorMessage.text(message);
     console.error(message);
+  }
+  async function notificationView() {
+    notificationContainer.removeClass("notification-collapsed");
+    setTimeout(() => {
+      notificationContainer.addClass("notification-collapsed");
+    }, 3500);
   }
   async function fetchAndUpdate(date) {
     const url = new URL(apiAddress);
@@ -162,6 +171,7 @@ jQuery(function() {
     const callback = (controller) => {
       controller.addListener("ready", () => {
         element.style.opacity = "1";
+        element.parentElement?.querySelector(".embed-loader")?.remove();
       });
     };
     createEmbedController(child, options, callback);
