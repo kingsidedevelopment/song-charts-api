@@ -30,7 +30,10 @@ jQuery(function () {
 	const resultsWrapper = $('#results-wrapper')
 	const resultsHeading = $('#results-heading')
 	const resultsContainer = $('#results-container')
-	const loadingWrapper = $('#loading-results')
+	const loadingResultsSection = $('#loading-results')
+	const noResultsSection = $('#no-results')
+	const errorResultsSection = $('#error-results')
+	const errorMessage = $('#error-message')
 
 	const limit = 12
 	const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -60,7 +63,7 @@ jQuery(function () {
 	// hides placeholder results and shows loading
 	// web page should prerender these hidden
 	// anyway, but this is just for completeness
-	loadingView()
+	defaultView()
 
 	// avoid race updating view
 	setTimeout(() => {
@@ -69,14 +72,19 @@ jQuery(function () {
 		const month = params.get('Month')
 		const year = params.get('Year')
 		const queryDate = `${year}-${month}-${day}`
-		const nowDate = new Date()
 
-		nowDate.setDate(nowDate.getDate() - 2)
+		if (!day || !month || !year) {
+			defaultView()
+			return
+		}
 
-		const formattedNowDate = getFormattedDate(nowDate)
-		const date = queryDate ?? formattedNowDate
+		loadingView()
 
-		fetchAndUpdate(date)
+		yearInput.val(year)
+		monthInput.val(month)
+		dayInput.val(day)
+
+		fetchAndUpdate(queryDate)
 	}, 0)
 
 	function createEmbedController(
@@ -114,22 +122,38 @@ jQuery(function () {
 		resultsHeading.hide()
 		resultsWrapper.hide()
 		resultsContainer.hide()
-		loadingWrapper.show()
+		noResultsSection.hide()
+		errorResultsSection.hide()
+		loadingResultsSection.show()
+	}
+
+	async function defaultView() {
+		resultsHeading.hide()
+		resultsWrapper.hide()
+		resultsContainer.hide()
+		errorResultsSection.hide()
+		loadingResultsSection.hide()
+		noResultsSection.show()
 	}
 
 	async function resultsView() {
 		resultsHeading.show()
 		resultsWrapper.show()
 		resultsContainer.show()
-		loadingWrapper.hide()
+		loadingResultsSection.hide()
+		noResultsSection.hide()
+		errorResultsSection.hide()
 	}
 
 	async function errorView(message: string) {
 		resultsHeading.hide()
 		resultsWrapper.hide()
 		resultsContainer.hide()
-		loadingWrapper.hide()
+		loadingResultsSection.hide()
+		noResultsSection.hide()
+		errorResultsSection.show()
 
+		errorMessage.text(message)
 		console.error(message)
 	}
 
