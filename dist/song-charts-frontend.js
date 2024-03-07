@@ -1,6 +1,6 @@
 // src/frontend.ts
 jQuery(function() {
-  const dateForm = document.forms.namedItem("Birthday Form");
+  const submitButton = $("#submit-button");
   const monthInput = $("#Month");
   const dayInput = $("#Day");
   const yearInput = $("#Year");
@@ -16,11 +16,7 @@ jQuery(function() {
   const resultsPreviewNotAvail = ranking.map((rank) => $(`#result-preview-not-available-${rank}`));
   const apiAddress = "https://arpeggio-production.up.railway.app/top-tracks";
   let spotifyIframeAPI = null;
-  if (!dateForm) {
-    console.log("Date form not found. Refresh the page");
-    return;
-  }
-  dateForm.addEventListener("submit", onSubmit);
+  submitButton.get(0)?.addEventListener("click", onSubmit);
   window.onSpotifyIframeApiReady = (IFrameAPI) => {
     spotifyIframeAPI = IFrameAPI;
     console.log("Spotify iframe API ready");

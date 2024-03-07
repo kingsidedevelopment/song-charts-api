@@ -23,7 +23,7 @@ type IFrameApi = {
 }
 
 jQuery(function () {
-	const dateForm = document.forms.namedItem('Birthday Form')
+	const submitButton = $('#submit-button')
 	const monthInput = $('#Month')
 	const dayInput = $('#Day')
 	const yearInput = $('#Year')
@@ -47,12 +47,7 @@ jQuery(function () {
 	const apiAddress = 'https://arpeggio-production.up.railway.app/top-tracks'
 	let spotifyIframeAPI: IFrameApi | null = null
 
-	if (!dateForm) {
-		console.log('Date form not found. Refresh the page')
-		return
-	}
-
-	dateForm.addEventListener('submit', onSubmit)
+	submitButton.get(0)?.addEventListener('click', onSubmit)
 
 	// @ts-ignore
 	window.onSpotifyIframeApiReady = (IFrameAPI: any) => {
@@ -94,7 +89,7 @@ jQuery(function () {
 		spotifyIframeAPI.createController(element, options, callback)
 	}
 
-	async function onSubmit(event: SubmitEvent) {
+	async function onSubmit(event: MouseEvent) {
 		event.preventDefault()
 
 		const year = Number(yearInput.val())
