@@ -23,7 +23,7 @@ type IFrameApi = {
 }
 
 jQuery(function () {
-	const submitButton = $('#submit-button')
+	const dateForm = document.forms.namedItem('Birthday Form')
 	const monthInput = $('#Month')
 	const dayInput = $('#Day')
 	const yearInput = $('#Year')
@@ -47,7 +47,12 @@ jQuery(function () {
 	const apiAddress = 'https://arpeggio-production.up.railway.app/top-tracks'
 	let spotifyIframeAPI: IFrameApi | null = null
 
-	submitButton.on('click', onSubmit)
+	if (!dateForm) {
+		console.log('Date form not found. Refresh the page')
+		return
+	}
+
+	dateForm.addEventListener('submit', onSubmit)
 
 	// @ts-ignore
 	window.onSpotifyIframeApiReady = (IFrameAPI: any) => {
@@ -86,14 +91,10 @@ jQuery(function () {
 			return
 		}
 
-		console.log(
-			`Creating embed controller for ${element.id} with uri ${options.uri}`
-		)
-
 		spotifyIframeAPI.createController(element, options, callback)
 	}
 
-	async function onSubmit(event: JQuery.Event) {
+	async function onSubmit(event: SubmitEvent) {
 		event.preventDefault()
 
 		const year = Number(yearInput.val())
@@ -164,17 +165,13 @@ jQuery(function () {
 			resultsArtists[index].text(artist)
 			resultsChartTimes[index].text(`${weeksOnChart} weeks on chart`)
 
-			console.log(
-				`Updating embed for rank ${rank} (index ${index}) with spotifyId ${spotifyId} (song ${title})`
-			)
-
-			!spotifyId
-				? resultsPreviewNotAvail[index].show()
-				: resultsPreviewNotAvail[index].hide()
-
 			if (spotifyId) {
 				updateEmbed(rank, spotifyId)
+				resultsPreviewNotAvail[index].hide()
+				continue
 			}
+
+			resultsPreviewNotAvail[index].show()
 		}
 		resultsHeading.text(`Top songs for ${convertDateFormat(formattedDate)}`)
 	}
