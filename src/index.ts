@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
-import { cors } from 'hono/cors'
 import { getSpotifyTrack } from './lib/spotify'
-import { getCorsHeaders, validateDateFormat } from './utils'
+import { getCorsHeaders, getNextDayOfWeek, validateDateFormat } from './utils'
 import db, { hot100 } from './lib/postgres'
 import { sql } from 'drizzle-orm'
 import { Track } from 'spotify-api.js'
@@ -76,14 +75,28 @@ app.get('/top-tracks', async c => {
 		return c.json({ error: 'Limit is required' }, 400, corsHeaders)
 	}
 
+	console.time('Request response time')
+
 	// date format YYYY-MM-DD
 	const formattedDate = new Date(date).toISOString().split('T')[0]
+	console.log(formattedDate)
 	const isValidDate = validateDateFormat(formattedDate)
 
 	if (!formattedDate || !isValidDate) {
 		console.log(`[${nonce}] Invalid date format`)
 		return c.json({ error: 'Invalid date format' }, 400, corsHeaders)
 	}
+
+	// move to nearest Saturday. We only want to use this date
+	// for the lookup, the actual date is still returned in
+	// the response
+	const queriedDate = new Date(formattedDate)
+	const nextSaturday = getNextDayOfWeek(queriedDate, 6)
+	const nextSaturdayFormatted = nextSaturday.toISOString().split('T')[0]
+
+	console.log(
+		`[${nonce}] Queried date: ${formattedDate} Query Saturday: ${nextSaturdayFormatted}`
+	)
 
 	console.log(
 		`[${nonce}] Fetching top tracks for ${formattedDate} with limit ${limit}`
@@ -94,7 +107,7 @@ app.get('/top-tracks', async c => {
 		.select()
 		.from(hot100)
 		.limit(Number(limit))
-		.where(sql`${hot100.chartWeek} = ${formattedDate}`)
+		.where(sql`${hot100.chartWeek} = ${nextSaturdayFormatted}`)
 	const queryTime = performance.now() - queryTimeNow
 
 	if (songs.length === 0) {
@@ -132,6 +145,8 @@ app.get('/top-tracks', async c => {
 	)
 
 	console.log(`[${nonce}] Returning ${songResults.length} songs`)
+
+	console.timeEnd('Request response time')
 
 	return c.json({ date, limit, songs: songResults }, 200, corsHeaders)
 })

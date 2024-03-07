@@ -29,6 +29,14 @@ export function validateDateFormat(date: string) {
 	}
 }
 
+type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+export function getNextDayOfWeek(date: Date, dayOfWeek: DayOfWeek) {
+	const resultDate = new Date(date.getTime())
+	resultDate.setDate(date.getDate() + ((6 + dayOfWeek - date.getDay()) % 7))
+	return resultDate
+}
+
 export function getCorsHeaders(
 	whitelist: string[],
 	origin: string | undefined
