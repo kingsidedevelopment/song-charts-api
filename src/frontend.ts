@@ -59,7 +59,8 @@ jQuery(function () {
 	const resultsPreviewNotAvail = ranking.map(rank =>
 		$(`#result-preview-not-available-${rank}`)
 	)
-	const apiAddress = 'https://arpeggio-production.up.railway.app/top-tracks'
+	const apiAddress =
+		'https://song-charts-api-kkvgwykdtq-uk.a.run.app/top-tracks'
 	let spotifyIframeAPI: IFrameApi | null = null
 
 	submitButton.get(0)?.addEventListener('click', onSubmit)
