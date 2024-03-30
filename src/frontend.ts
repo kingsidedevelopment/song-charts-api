@@ -49,6 +49,20 @@ jQuery(function () {
 
 	const limit = 12
 	const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	]
 
 	const resultsTitles = ranking.map(rank => $(`#result-title-${rank}`))
 	const resultsArtists = ranking.map(rank => $(`#result-artist-${rank}`))
@@ -284,12 +298,7 @@ jQuery(function () {
 	}
 
 	function convertDateFormat(dateString: string) {
-		const date = new Date(dateString)
-		const options: Intl.DateTimeFormatOptions = {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
-		}
-		return date.toLocaleDateString('en-US', options)
+		const [year, month, day] = dateString.split('-')
+		return `${months[Number(month) - 1]} ${day}, ${year}`	
 	}
 })
