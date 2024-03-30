@@ -153,6 +153,7 @@ jQuery(function() {
       }
       resultsPreviewNotAvail[index].show();
     }
+    console.log("date", date, convertDateFormat(formattedDate));
     resultsHeading.text(`Top songs for ${convertDateFormat(formattedDate)}`);
   }
   async function updateEmbed(rank, trackId) {
