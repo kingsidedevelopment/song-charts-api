@@ -17,14 +17,33 @@ jQuery(function() {
   const resultsAnchor = $("#results-anchor");
   const notificationContainer = $("#notification-container");
   const notificationBlock = $("#notification-block");
+  const milestone13Button = $("#milestone-13-button");
+  const milestone16Button = $("#milestone-16-button");
+  const milestone18Button = $("#milestone-18-button");
+  const milestone21Button = $("#milestone-21-button");
+  const milestone30Button = $("#milestone-30-button");
   const limit = 12;
   const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
   const resultsTitles = ranking.map((rank) => $(`#result-title-${rank}`));
   const resultsArtists = ranking.map((rank) => $(`#result-artist-${rank}`));
   const resultsChartTimes = ranking.map((rank) => $(`#result-chart-time-${rank}`));
   const resultsPreviewNotAvail = ranking.map((rank) => $(`#result-preview-not-available-${rank}`));
-  const apiAddress = "https://song-charts-api-kkvgwykdtq-uk.a.run.app/top-tracks";
   let spotifyIframeAPI = null;
+  const apiAddress = "https://song-charts-api-kkvgwykdtq-uk.a.run.app/top-tracks";
   submitButton.get(0)?.addEventListener("click", onSubmit);
   resetButton.get(0)?.addEventListener("click", onReset);
   shareButton.get(0)?.addEventListener("click", onShare);
@@ -120,12 +139,12 @@ jQuery(function() {
       notificationContainer.addClass("notification-collapsed");
     }, 3500);
   }
-  async function fetchAndUpdate(date) {
+  async function fetchAndUpdate(date, additionalFeatureParams) {
     const url = new URL(apiAddress);
     const [year, month, day] = date.split("-");
     url.searchParams.set("date", date);
     url.searchParams.set("limit", String(limit));
-    history.pushState({ year, month, day }, "yyyy-mm-dd", `?Day=${day}&Month=${month}&Year=${year}`);
+    history.pushState({ year, month, day }, "yyyy-mm-dd", `?Day=${day}&Month=${month}&Year=${year}&${additionalFeatureParams}`);
     const data = await fetch(url, {
       method: "get",
       headers: {
@@ -153,8 +172,43 @@ jQuery(function() {
       }
       resultsPreviewNotAvail[index].show();
     }
-    console.log("date", date, convertDateFormat(formattedDate));
     resultsHeading.text(`Top songs for ${convertDateFormat(formattedDate)}`);
+    updateMilestones(date);
+  }
+  function updateMilestones(date) {
+    console.log("Populating milestones");
+    const born = getSearch("born") ?? date;
+    const current = getSearch("milestone") ?? 0;
+    const milestoneData = getMilestonesRelativeToBirth(born);
+    const milestoneButtons = [
+      milestone13Button,
+      milestone16Button,
+      milestone18Button,
+      milestone21Button,
+      milestone30Button
+    ];
+    milestoneButtons.forEach((button, index) => {
+      button.text(milestoneData.years[index]);
+      button.on("click", () => {
+        fetchAndUpdate(milestoneData.dates[index], `born=${date}&milestone=${index}`);
+      });
+      if (index === current) {
+        button.attr("disabled", "true");
+      }
+    });
+  }
+  function getMilestonesRelativeToBirth(date) {
+    const dateParts = date.split("-");
+    const babyYear = Number(dateParts[0]);
+    const milestones = [0, 13, 16, 18, 21, 30];
+    return {
+      years: milestones.map((milestone) => {
+        return babyYear + milestone;
+      }),
+      dates: milestones.map((milestone) => {
+        return `${babyYear + milestone}-${dateParts.slice(1, -1).join("-")}`;
+      })
+    };
   }
   async function updateEmbed(rank, trackId) {
     const element = $(`#spotify-iframe-${rank}`).get(0);
@@ -186,13 +240,11 @@ jQuery(function() {
     const dd = d < 10 ? "0" + d : d;
     return `${yyyy}-${mm}-${dd}`;
   }
+  function getSearch(key) {
+    return new URL(window.location.href).searchParams.get(key);
+  }
   function convertDateFormat(dateString) {
-    const date = new Date(dateString);
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    };
-    return date.toLocaleDateString("en-US", options);
+    const [year, month, day] = dateString.split("-");
+    return `${months[Number(month) - 1]} ${day}, ${year}`;
   }
 });

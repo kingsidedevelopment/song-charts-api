@@ -47,6 +47,12 @@ jQuery(function () {
 	const notificationContainer = $('#notification-container')
 	const notificationBlock = $('#notification-block')
 
+	const milestone13Button = $('#milestone-13-button')
+	const milestone16Button = $('#milestone-16-button')
+	const milestone18Button = $('#milestone-18-button')
+	const milestone21Button = $('#milestone-21-button')
+	const milestone30Button = $('#milestone-30-button')
+
 	const limit = 12
 	const ranking = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 	const months = [
@@ -73,9 +79,9 @@ jQuery(function () {
 	const resultsPreviewNotAvail = ranking.map(rank =>
 		$(`#result-preview-not-available-${rank}`)
 	)
+	let spotifyIframeAPI: IFrameApi | null = null
 	const apiAddress =
 		'https://song-charts-api-kkvgwykdtq-uk.a.run.app/top-tracks'
-	let spotifyIframeAPI: IFrameApi | null = null
 
 	submitButton.get(0)?.addEventListener('click', onSubmit)
 	resetButton.get(0)?.addEventListener('click', onReset)
@@ -89,7 +95,7 @@ jQuery(function () {
 		onReady()
 	}
 
-	// hides placeholder results and shows loading
+	// hides placeholder results and shows loading.
 	// web page should prerender these hidden
 	// anyway, but this is just for completeness
 	defaultView()
@@ -209,7 +215,7 @@ jQuery(function () {
 		}, 3500)
 	}
 
-	async function fetchAndUpdate(date: string) {
+	async function fetchAndUpdate(date: string, additionalFeatureParams: string) {
 		const url = new URL(apiAddress)
 		const [year, month, day] = date.split('-')
 		url.searchParams.set('date', date)
@@ -219,7 +225,7 @@ jQuery(function () {
 		history.pushState(
 			{ year, month, day },
 			'yyyy-mm-dd',
-			`?Day=${day}&Month=${month}&Year=${year}`
+			`?Day=${day}&Month=${month}&Year=${year}&${additionalFeatureParams}`
 		)
 
 		const data = await fetch(url, {
@@ -254,8 +260,49 @@ jQuery(function () {
 
 			resultsPreviewNotAvail[index].show()
 		}
-		console.log('date', date, convertDateFormat(formattedDate))
 		resultsHeading.text(`Top songs for ${convertDateFormat(formattedDate)}`)
+		
+		updateMilestones(date)
+	}
+
+	function updateMilestones(date: string) {
+		console.log('Populating milestones')
+		const born = getSearch('born') ?? date
+		const current = getSearch('milestone') ?? 0
+		const milestoneData = getMilestonesRelativeToBirth(born)
+
+		const milestoneButtons = [
+			milestone13Button,
+			milestone16Button,
+			milestone18Button,
+			milestone21Button,
+			milestone30Button
+		]
+
+		milestoneButtons.forEach((button, index) => {
+			button.text(milestoneData.years[index])
+			button.on('click', () => {
+				fetchAndUpdate(milestoneData.dates[index], `born=${date}&milestone=${index}`)
+			})
+
+			if(index === current) {
+				button.attr('disabled', 'true')
+			}
+		})
+	}
+
+	function getMilestonesRelativeToBirth(date: string) {
+		const dateParts = date.split('-')
+		const babyYear = Number(dateParts[0])
+		const milestones = [0, 13, 16, 18, 21, 30]
+		return {
+			years: milestones.map(milestone => {
+				return babyYear + milestone
+			}), 
+			dates: milestones.map(milestone => {
+				return `${babyYear + milestone}-${dateParts.slice(1, -1).join('-')}`
+			})
+		}
 	}
 
 	async function updateEmbed(rank: number, trackId: string) {
@@ -295,6 +342,10 @@ jQuery(function () {
 		const dd = d < 10 ? '0' + d : d
 
 		return `${yyyy}-${mm}-${dd}`
+	}
+
+	function getSearch(key: string) {
+		return new URL(window.location.href).searchParams.get(key)
 	}
 
 	function convertDateFormat(dateString: string) {
